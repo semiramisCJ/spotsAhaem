@@ -14,12 +14,11 @@ import numpy as np
 ###Argument definition
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--path", help="COMPLETE path with input file(s)/folder(s). The output file will be written there. BioPython and Numpy must be installed")
-parser.add_argument("-f", "--file", help="Input file name. Examples: contigs.fa, final_contigs.fasta, polished_assembly.fasta")
-parser.add_argument("-m", "--min", help="Min. contig length (# bases). Recommended: 300")
-parser.add_argument("-s", "--seq", help="Sequencing technology name. Examples: HiSeq, MiSeq, PacBio, etc")
-parser.add_argument("-a", "--assembler", help="Assembler name. Examples: velvet, spades, ABySS, smrtools, other")
-#parser.add_argument("-t", "--type", help="Type of input (single file vs multiple files). Options: single [single file], multi [multiple files]. Default multi")
-parser.add_argument("-e", "--exclude", help="Exclude contigs with len lesser than the m parameter. Default False. If True, it will write a new file with prefix minLen_")
+parser.add_argument("-f", "--file", help="Input file name in the k-mer directories. Examples: contigs.fa, final_contigs.fasta, polished_assembly.fasta")
+parser.add_argument("-m", "--min", type=int, help="Minimum contig length (# bases). Recommended: 300 as in CLC genomics workbench; NCBI accepts contigs >=200 in size")
+parser.add_argument("-s", "--seq", help="Sequencing technology name. Examples: HiSeq, MiSeq, PacBio, etc. This will be used as a prefix for the output file.")
+parser.add_argument("-a", "--assembler", help="Assembler name. Examples: velvet, spades, ABySS, smrtools, other. This is used as a guide for the directory structure. 'Other' supports the case when there is only one file in the main directory and there are no subdirectories, as is the case of smrtools, metassembler, unicycler")
+parser.add_argument("-e", "--exclude", help="Exclude contigs with len lesser than the m parameter. Default False. If True, it will write a new fasta file with prefix minLen_")
 args = parser.parse_args()
 
 ###Function definition
@@ -41,7 +40,6 @@ def getAssemblyStats(path, minContigLen, inputFileName, filterContigs):
         totalContigs+=1
         if len(record.seq) > minContigLen:
             contigInfo.update({record.name : len(record.seq) })
-    
     
     contigs=len(contigInfo)
     aveContigLen=int(np.mean(contigInfo.values()))
@@ -74,7 +72,8 @@ def getAssemblyInfo(path, inputFileName, minContigLen, seqTechnology, assembler,
     
     dirs=walkPaths(path)
     assemblyInfo={}
-    if exclude in ['True', 'true', 'T', 'TRUE', 'yes', 'YES', 'Y', 'y']:
+    ################Patch for varied user input
+    if exclude in ['True', 'true', 'T', 'TRUE', 'yes', 'YES', 'Y', 'y']: 
         filterContigs=True
     else: filterContigs=False
     
@@ -91,8 +90,6 @@ def getAssemblyInfo(path, inputFileName, minContigLen, seqTechnology, assembler,
                 kmer="NA"
             else:
                 kmer=kmer
-            #else:
-            #    kmer="unknown"
             
             assemblyInfo.update({kmer: stats})
     
