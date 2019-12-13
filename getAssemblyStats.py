@@ -106,4 +106,4 @@ def getAssemblyInfo(path, inputFileName, minContigLen, seqTechnology, assembler,
     f.close()
 
 #Call to master function with user-provided arguments
-getAssemblyInfo(args.path, args.file, int(args.min), args.seq, args.assembler, args.exclude)
+getAssemblyInfo(args.path, args.file, args.min, args.seq, args.assembler, args.exclude)
