@@ -1,5 +1,8 @@
 # spotsAhaem
-Scripts used for the analyses in Castro-Jaimes S, et al, 2020
+Scripts used for the analyses in Castro-Jaimes, et al (2020) Chromosome Architecture
+and Gene Content of the Emergent Pathogen *Acinetobacter haemolyticus. Front. Microbiol.* 11:926
+https://doi.org/10.3389/fmicb.2020.00926
+
 
 # License
 MIT License
